@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quran audio player </title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Hind+Siliguri:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    .surahs {}
+
+    .surah {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .number {
+      background-image: url('bg1.png');
+      background-repeat: no-repeat;
+      -webkit-background-size: cover;
+      background-size: cover;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #444;
+      font-weight: bold;
+      background-position: center center;
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .surah {}
+
+    .english-name {
+      color: #240F4F !important;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 24px;
+      text-align: left !important;
+
+    }
+
+    .arabic {
+      color: #863ED5;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 35px;
+      font-family: 'Amiri Quran', serif;
+
+    }
+
+    .dot {
+      height: 4px;
+      width: 4px;
+      background: #BBC4CE59;
+      display: inline-block;
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      border-radius: 50%;
+    }
+
+    .location,
+    .verses {
+      color: #8789A3;
+      font-weight: 500;
+      font-size: 12px;
+      text-transform: uppercase;
+
+
+    }
+
+    .wrapper {
+      display: flex;
+      justify-content: space-between;
+
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+
+      background-color: #fff;
+      border-top: 1px solid #ddd;
+    }
+
+    .footer-menu {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+
+    }
+
+    .footer-menu button {
+      border: 1px solid red;
+      display: inline-block;
+      padding: 10px 20px;
+      border: none;
+      background: none;
+
+    }
+
+    #footer {
+
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      border-top: 1px solid #ddd;
+     
+    }
+
+    audio {
+      background: none;
+    }
+
+
+    audio::-webkit-media-controls-play-button,
+    audio::-webkit-media-controls-panel {
+      background-color: #fff !important;
+      color: red !important;
+    }
+
+    .dropdown-menu {
+      left: 10px;
+    }
+
+    .dropdown-menu a {
+      padding: 10px 10px;
+      border-bottom: 1px solid #ddd;
+      color: #111;
+      font-weight: bold;
+      font-family: 'Hind Siliguri', sans-serif;
+    }
+
+    .top {
+      font-size: 29px;
+      background-color: #182335;
+      padding: 15px;
+
+    }
+  </style>
+</head>
+
+<body>
+  
+
+    <div class="container">
+      <div class="surahs">
+
+      </div>
+    </div>
+
+    <footer id="footer">
+
+    </footer>
+
+
+    <script>
+      var suraContainer = document.querySelector('.surahs');
+      var footer = document.getElementById('footer')
+      /* fetch('https://api.quran.com/api/v4/chapter_recitations/1/1')
+   .then(res=>res.json())
+  .then(data=>{
+    console.log(data)
+  }) */
+      fetch('https://api.quran.com/api/v4/chapters?language=en')
+        .then(res => res.json())
+        .then(data => {
+          console.log(data.chapters[0])
+
+          for (item of data.chapters) {
+            // console.log(item)
+            const surah = document.createElement('div');
+            surah.innerHTML = `
+              <div class="surah">
+                <div class="left">
+                  <div class="number">
+                   
+                  </div>
+                  <div class="detail">
+                    <p class="english-name">${item.name_simple}</p>
+                    <p>
+                      <span class="location">${item.revelation_place}</span>
+                      <span class="dot"></span>
+                      <span class="verses">${item.verses_count} ayath</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="right">
+                  <p class="arabic">${item.name_arabic}<p>
+                </div>
+              </div>
+        
+        `
+            suraContainer.appendChild(surah)
+            //console.log(surah)
+
+
+          }
+
+          let allSura = document.querySelectorAll(".surahs > div");
+          console.log(allSura.length)
+          allSura.forEach((sur, index) => {
+            sur.addEventListener('click', () => {
+              //console.log(index+1)
+
+
+              fetch(`https://api.quran.com/api/v4/chapter_recitations/3/${index+1}`)
+                .then(res => res.json())
+                .then(data => {
+                  console.log("🙄" + data.audio_file.audio_url)
+
+
+
+
+                  footer.innerHTML = `
+                  <div class="wrapper">
+                    <ul class="footer-menu">
+                      <li class="karis dropup">
+                        <button class="dropdown-toggle" data-bs-toggle="dropdown">
+                          <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#863ED5" class="bi bi-people-fill" viewBox="0 0 16 16">
+                              <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                              <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z" />
+                              <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+                            </svg>
+                          </span>
+                        </button>
+               
+                        <ul class="dropdown-menu">
+                          <li class="firstItem"><a class="dropdown-item" href="#">আবু বকর আল শাত্রী</a></li>
+                          <li class="SecondItem"><a class="dropdown-item" href="#">সালাহ বুখাতির</a></li>
+                          <li class="thirdItem"><a class="dropdown-item" href="#">জিবরিন</a></li>
+                           <li class="fourthItem"><a class="dropdown-item" href="#">হানি আর রিফাই</a></li>
+                           <li class="fifthItem"><a class="dropdown-item" href="#">মাহমুদ খলিল আল-হুসারি</a></li>
+                           <li class="sixItem"><a class="dropdown-item" href="#">সুদাইস এবং শুরাইল অনুবাদসহ</a></li>
+                           <li class="sevenItem"><a class="dropdown-item" href="#">মক্কা</a></li>
+
+
+
+                        </ul>
+               
+                      </li>
+                      <li>
+                        <button>
+                        <audio controls id="audio" src="">
+                        </audio>
+                         
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+               
+               `
+
+                  const audio = document.getElementById('audio')
+
+                  audio.pause();
+                  audio.src = "";
+                  audio.src = "";
+                  audio.src = data.audio_file.audio_url
+                  console.log(audio)
+                  // audio.pause()
+                  audio.play();
+
+                  document.querySelector('.firstItem').addEventListener('click', () => {
+
+                    fetch(`https://api.quran.com/api/v4/chapter_recitations/4/${index+1}`)
+                      .then(response => response.json())
+                      .then(mata =>
+                      {
+                        audio.pause();
+
+                        console.log(mata.audio_file.audio_url);
+                        audio.src = mata.audio_file.audio_url;
+                        audio.play()
+                      })
+
+                    audio.pause()
+                    //audio.src=.audio_file.audio_url
+                    // console.log('🙏'+mata.audio_file.audio_url)
+                    audio.play()
+                    //audio.pause()
+                    // audio.scr=``
+                    // alert("stoped")
+                    // audio.play();
+                    //  
+                    // audio.play()
+                  });
+                  document.querySelector('.SecondItem').addEventListener('click', () => {
+
+                    fetch(`https://api.quran.com/api/v4/chapter_recitations/18/${index+1}`)
+                      .then(response => response.json())
+                      .then(mata =>
+                      {
+                        console.log(mata.audio_file.audio_url);
+                        audio.src = mata.audio_file.audio_url;
+                        audio.play()
+                      })
+
+                    audio.pause()
+                    //audio.src=.audio_file.audio_url
+                    // console.log('🙏'+mata.audio_file.audio_url)
+                    audio.play()
+                    //audio.pause()
+                    // audio.scr=``
+                    // alert("stoped")
+                    // audio.play();
+                    //  
+                    // audio.play()
+                  });
+                  document.querySelector('.thirdItem').addEventListener('click', () => {
+
+                    fetch(`https://api.quran.com/api/v4/chapter_recitations/28/${index+1}`)
+                      .then(response => response.json())
+                      .then(mata =>
+                      {
+                        console.log(mata.audio_file.audio_url);
+                        audio.src = mata.audio_file.audio_url;
+                        audio.play()
+                      })
+
+                    audio.pause()
+                    //audio.src=.audio_file.audio_url
+                    // console.log('🙏'+mata.audio_file.audio_url)
+                    audio.play()
+                    //audio.pause()
+                    // audio.scr=``
+                    // alert("stoped")
+                    // audio.play();
+                    //  
+                    // audio.play()
+                  });
+
+                  document.querySelector('.fourthItem').addEventListener('click', () => {
+
+                    fetch(`https://api.quran.com/api/v4/chapter_recitations/5/${index+1}`)
+                      .then(response => response.json())
+                      .then(mata =>
+                      {
+                        console.log(mata.audio_file.audio_url);
+                        audio.src = mata.audio_file.audio_url;
+                        audio.play()
+                      })
+
+                    audio.pause()
+                    //audio.src=.audio_file.audio_url
+                    // console.log('🙏'+mata.audio_file.audio_url)
+                    audio.play()
+                    //audio.pause()
+                    // audio.scr=``
+                    // alert("stoped")
+                    // audio.play();
+                    //  
+                    // audio.play()
+                  });
+                  document.querySelector('.fifthItem').addEventListener('click', () => {
+
+                    fetch(`https://api.quran.com/api/v4/chapter_recitations/6/${index+1}`)
+                      .then(response => response.json())
+                      .then(mata =>
+                      {
+                        console.log(mata.audio_file.audio_url);
+                        audio.src = mata.audio_file.audio_url;
+                        audio.play()
+                      })
+
+                    audio.pause()
+                    //audio.src=.audio_file.audio_url
+                    // console.log('🙏'+mata.audio_file.audio_url)
+                    audio.play()
+                    //audio.pause()
+                    // audio.scr=``
+                    // alert("stoped")
+                    // audio.play();
+                    //  
+                    // audio.play()
+                  });
+                  document.querySelector('.sixItem').addEventListener('click', () => {
+
+                    fetch(`https://api.quran.com/api/v4/chapter_recitations/36/${index+1}`)
+                      .then(response => response.json())
+                      .then(mata =>
+                      {
+                        console.log(mata.audio_file.audio_url);
+                        audio.src = mata.audio_file.audio_url;
+                        audio.play()
+                      })
+
+                    audio.pause()
+                    //audio.src=.audio_file.audio_url
+                    // console.log('🙏'+mata.audio_file.audio_url)
+                    audio.play()
+                    //audio.pause()
+                    // audio.scr=``
+                    // alert("stoped")
+                    // audio.play();
+                    //  
+                    // audio.play()
+                  });
+                  document.querySelector('.sevenItem').addEventListener('click', () => {
+
+                    fetch(`https://api.quran.com/api/v4/chapter_recitations/29/${index+1}`)
+                      .then(response => response.json())
+                      .then(mata =>
+                      {
+                        console.log(mata.audio_file.audio_url);
+                        audio.src = mata.audio_file.audio_url;
+                        audio.play()
+                      })
+
+                    audio.pause()
+                    //audio.src=.audio_file.audio_url
+                    // console.log('🙏'+mata.audio_file.audio_url)
+                    audio.play()
+                    //audio.pause()
+                    // audio.scr=``
+                    // alert("stoped")
+                    // audio.play();
+                    //  
+                    // audio.play()
+                  });
+
+
+
+                })
+
+            })
+          })
+
+
+        })
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
