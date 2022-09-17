@@ -1,0 +1,79 @@
+body{
+    font-size: 15pt;
+    background: url('bg.jpg');
+    background-position: center center;
+    background-attachment: fixed;
+    max-width: 500px;
+    margin: auto ;
+    counter-reset: my-counter;
+    
+}
+
+
+.player p{
+  text-align: center;
+ 
+  font-family: 'Amiri', serif;
+}
+
+.buttons{
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  margin: auto;
+  
+}
+.buttons .icon{
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  
+}
+
+.surahs > div{
+  color: #000;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 20px;
+  margin: 10px;
+  text-align: right;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  position: relative;
+ /* counter-increment: sura-counter; */
+ height: 100px;
+
+}
+.surahs > div:hover{
+ 
+}
+
+.surahs >div p:nth-child(3){
+  color: #555;
+  font-size: 13px;
+  font-weight: 400;
+}
+.surahs > div::after{
+  content: "" counter(my-counter);
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  
+  height: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY();
+  background-image: url('number-bg.png');
+  background-position: center;
+  background-size: cover;
+  font-size: 20px;
+  counter-increment: my-counter 1;
+  padding: 8px;
+  font-weight: bold;
+  
+}
